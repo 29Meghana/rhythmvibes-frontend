@@ -35,6 +35,24 @@ body {
   min-height: 10vh; /* Increased height to avoid crowding */
 }
 
+/* Add a pseudo-element for the overlay */
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Black overlay with 50% opacity */
+  z-index: 0; /* Ensure the overlay stays behind the text */
+}
+
+/* Ensure content stays above the overlay */
+.header > * {
+  position: relative;
+  z-index: 1;
+}
+
 .header h1 {
   font-size: 3rem;
   margin-bottom: 30px;
@@ -49,7 +67,7 @@ body {
 }
 
 .logo {
-  height: 100px; /* Adjusted for a better fit */
+  height: 120px; /* Adjusted for a better fit */
   width: auto;
 }
 
@@ -58,8 +76,8 @@ body {
   display: flex;
   justify-content: center; /* Center the tabs */
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 10px 30; /* Reduced vertical padding */
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background for the tabs */
+  padding: 10px 30px; /* Reduced vertical padding */
   height: auto;
   width: 100%;
   margin-top: 70px; /* Keep the tabs a bit lower */
@@ -97,7 +115,7 @@ body {
   border-radius: 4px;
   width: 250px;
   font-size: 16px;
-  background-color: rgba(255, 255, 255, 0.2); 
+  background-color: rgba(255, 255, 255, 0.2); /* Slight transparency for the input field */
   color: rgba(255, 255, 255, 0);
 }
 
