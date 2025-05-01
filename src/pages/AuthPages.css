@@ -1,0 +1,49 @@
+/* AuthPages.css - Shared for Login and Register */
+
+.auth-container {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    text-align: center;
+  }
+  
+  .auth-container h2 {
+    margin-bottom: 20px;
+  }
+  
+  .auth-container input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+  
+  .auth-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #ff80ab;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .auth-container button:hover {
+    background-color: #ff4f95;
+  }
+  
+  .auth-container p {
+    margin-top: 15px;
+    font-size: 14px;
+  }
+  
