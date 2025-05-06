@@ -1,31 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../App.css';
-import logo from '../images/logo.png'; // Importing the logo
+import logo from '../images/logo.png';
 
-function Header() {
+function Header({ onSearch }) {
+  const [search, setSearch] = useState('');
+
   return (
     <header className="header">
-      {/* Logo section */}
       <div className="logo-container">
         <a href="/">
           <img src={logo} alt="Rhythmvibes Logo" className="logo" />
         </a>
       </div>
 
-      {/* Navigation menu */}
       <nav className="nav-tabs">
-        <a href="/">Home</a>
-        <a href="/music">Music</a>
+        <a href="/home">Home</a>
         <a href="/">Your Playlist</a>
-        <a href="/">Library</a>
+        <a href="/downloads">Downloads</a>
         <a href="/">Premium</a>
-        <a href="/about">About</a>
+        <a href="/favourites">Favourites</a>
       </nav>
 
-      {/* Search bar */}
-      <div className="search-bar">
-        <input type="text" placeholder="Search your favorite track..." />
-        <button>Search</button>
+      <div className="header-search">
+        <input
+          type="text"
+          placeholder="Search your favorite track..."
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            onSearch(e.target.value); // live filtering
+          }}
+        />
+        <button onClick={() => onSearch(search)}>Search</button>
       </div>
     </header>
   );

@@ -1,304 +1,471 @@
-/* ----------------------- Header Component ----------------------- */
-/* Apply consistent box-sizing and remove default spacing */
-*,
-*::before,
-*::after {
+/* ------------ General Reset ------------ */ 
+* {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background-color: black; /* Fallback color */
-  font-family: 'Helvetica', sans-serif;
-  color: white;
-}
-
-#root {
-  height: 100%;
-}
-
-/* Optional: Spotify-style gradient background */
 body {
-  background: linear-gradient(to bottom, #121212, #181818);
-}
-
-.header {
-  background-image: url('./images/headoot.jpeg');
-  background-size: cover;
-  background-position: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to bottom right, #0f0f0f, #1c1c2b, #2c1c2c);
   color: white;
-  padding: 60px 0px 20px; /* Increased top padding to push content down */
+  overflow-x: hidden;
+}
+
+/* ------------ Header ------------ */
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 30px;
+  background: linear-gradient(to right, #1b1b2f, #1e1e1e);
+  border-bottom: 1px solid #333;
+}
+
+.logo {
+  width: 100px;
+  height: auto;
+}
+
+.nav-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.nav-tabs a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nav-tabs a:hover {
+  color: #ff80ab;
+}
+
+/* ------------ Header Search ------------ */
+.header-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-search input {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 14px;
+  width: 220px;
+}
+
+.header-search input::placeholder {
+  color: #ccc;
+}
+
+.header-search button {
+  background-color: #ff80ab;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.header-search button:hover {
+  background-color: #ff4f95;
+}
+
+/* ------------ Home Page ------------ */
+.home-page {
+  padding: 40px 20px;
+  min-height: 60vh;
+  background: linear-gradient(to bottom right, #0e0e1f, #15152a, #2a1f2a);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.section-title {
+  font-size: 28px;
+  margin-bottom: 25px;
+  font-weight: bold;
   text-align: center;
-  position: relative;
-  min-height: 10vh; /* Increased height to avoid crowding */
+  color: #ff80ab;
 }
 
-/* Add a pseudo-element for the overlay */
-.header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Black overlay with 50% opacity */
-  z-index: 0; /* Ensure the overlay stays behind the text */
-}
-
-/* Ensure content stays above the overlay */
-.header > * {
+.song-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  overflow: visible !important;
   position: relative;
   z-index: 1;
 }
 
-.header h1 {
-  font-size: 3rem;
-  margin-bottom: 30px;
-}
 
-/* Logo */
-.logo-container {
-  position: absolute;
-  top: 5px; /* Adjusted to make sure logo stays visible */
-  left: 20px;
-  z-index: 10; /* Ensure logo stays above other content */
-}
-
-.logo {
-  height: 120px; /* Adjusted for a better fit */
-  width: auto;
-}
-
-/* Tabs Section */
-.nav-tabs {
-  display: flex;
-  justify-content: center; /* Center the tabs */
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background for the tabs */
-  padding: 10px 30px; /* Reduced vertical padding */
-  height: auto;
-  width: 100%;
-  margin-top: 70px; /* Keep the tabs a bit lower */
-  box-sizing: border-box;
-}
-
-.nav-tabs a {
-  color: #c6c6c6;
-  background-color: transparent;
-  padding: 14px 25px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 18px;
-  transition: all 0.3s ease;
-}
-
-.nav-tabs a:hover {
-  text-decoration: underline;
-  color: #ff80ab;
-}
-
-/* Search Bar */
-.search-bar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 15px;
-  gap: 10px;
-}
-
-.search-bar input {
-  padding: 10px;
-  border: 1px solid #cccccc01;
-  border-radius: 4px;
-  width: 250px;
-  font-size: 16px;
-  background-color: rgba(255, 255, 255, 0.2); /* Slight transparency for the input field */
-  color: rgba(255, 255, 255, 0);
-}
-
-.search-bar input::placeholder {
-  color: #eee;
-}
-
-.search-bar button {
-  padding: 10px 16px;
-  background-color: #ff80ab;
-  color: rgb(255, 255, 255);
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.search-bar button:hover {
-  background-color: #ff4f95;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .nav-tabs {
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    padding: 20px;
-  }
-}
-/* ------------------------ Home page ---------------------------- */
-
-
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: linear-gradient(to bottom, #121212, #1c1c1c);
-  font-family: 'Helvetica', sans-serif;
-  color: #fff;
-}
-
-/* Main Home Page Container */
-.home-page {
-  min-height: 100vh;
-  text-align: center;
-  padding-bottom: 10px;
-  padding-top: 10px;
-}
-
-/* Banner Section */
-.banner {
-  padding: 50px 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  margin-bottom: 30px;
-}
-
-.banner h1 {
-  font-size: 3rem;
-  color: #fff;
-}
-
-/* Categories Section */
-.categories {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  padding: 0 20px;
-}
-
-/* Each Category */
-.category {
-  padding: 20px;
-  background-color: rgba(0, 0, 0, 0.7);
-  border-radius: 10px;
-}
-
-/* Song List inside each Category */
-.song-list {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-/* Song Card */
 .song-card {
-  background-color: #181818;
-  padding: 10px;
-  border-radius: 8px;
-  width: 150px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  width: 220px;
   text-align: center;
-  transition: transform 0.3s, background-color 0.3s;
+  transition: transform 0.2s ease;
+  position: relative;
+  overflow: visible !important;
+  z-index: 1;
 }
 
-.song-card:hover {
-  background-color: #282828;
-  transform: scale(1.05);
-}
-
-/* Song Image */
 .song-image {
   width: 100%;
-  height: 150px;
+  height: 180px;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: 10px;
+  margin-bottom: 10px;
 }
 
-/* Song Title */
-.song-card p {
+.song-title {
   color: #fff;
-  margin-top: 10px;
   font-weight: bold;
   font-size: 16px;
+  margin: 6px 0 0 0;
 }
 
-/* ----------------------- Sticky Music Player ----------------------- */
-.music-player {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  background-color: rgba(7, 7, 7, 0.85);
+.song-artist {
+  color: #ccc;
+  font-size: 13px;
+  margin: 4px 0 12px;
+}
+
+.custom-controls {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* 🔁 evenly spaced across full width */
   align-items: center;
-  padding: 12px 30px; /* 10px space on both sides */
+  width: 100%;
+  padding: 8px 0 0;
+  gap: 10px; /* Optional: more spacing between buttons */
   box-sizing: border-box;
-  color: white;
-  z-index: 1000;
-  backdrop-filter: blur(6px);
+}
+.custom-controls button,
+.menu-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
-/* ----------------------- Music Player Controls ----------------------- */
-.controls button {
-  margin: 0 8px;
+.custom-controls button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+  padding: 4px;
+  transition: transform 0.2s ease;
+}
+
+.custom-controls button:hover {
+  transform: scale(1.15);
+}
+
+/* ------------ Search Bar ------------ */
+.search-bar-box {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.search-bar-box input {
+  width: 280px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.search-bar-box input::placeholder {
+  color: #ccc;
+}
+
+/* ------------ Now Playing Bar ------------ */
+.now-playing-bar {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #181818;
+  border-top: 1px solid #444;
+  padding: 10px 20px;
+  color: white;
+  z-index: 999;
+  gap: 20px;
+}
+
+.now-playing-thumb {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.now-playing-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.now-playing-info strong {
+  font-size: 14px;
+}
+
+.now-playing-info small {
+  font-size: 12px;
+  color: #ccc;
+}
+
+.player-controls button {
+  font-size: 22px;
   background: none;
   border: none;
   color: white;
-  font-size: 1.4rem;
+  margin: 0 8px;
   cursor: pointer;
-  transition: color 0.3s;
+  transition: color 0.2s;
 }
 
-.controls button:hover {
-  color: #ff80ab; /* Pink hover effect */
+.player-controls button:hover {
+  color: #ff80ab;
 }
 
-/* ----------------------- Now Playing Text ----------------------- */
-.now-playing {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #f5f5f5;
+/* ------------ Like Button ------------ */
+.like-button {
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.3s ease;
 }
 
-/* ---------------------- Song Grid ------------------------ */
-.song-list, .song-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 20px;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 30px 20px;
+.like-button:hover {
+  transform: scale(1.2);
+  color: #ff80ab;
 }
 
-/* ---------------------- Categories Container ------------------------ */
-.categories {
+/* ------------ Audio Player ------------ */
+.rhap_container {
+  width: 100% !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+  font-size: 12px !important;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.rhap_controls-section svg,
+.rhap_volume-bar,
+.rhap_progress-bar {
+  max-width: 100%;
+}
+
+.rhap_progress-indicator,
+.rhap_progress-filled {
+  background-color: #ff80ab;
+}
+
+.rhap_time {
+  font-size: 10px;
+}
+
+/* ------------ Audio Control Bar ------------ */
+.custom-audio-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #1c1c2b;
+  border-radius: 12px;
+  padding: 8px 16px;
+  margin-top: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.play-btn,
+.volume-btn,
+.menu-button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 4px;
+  border-radius: 4px;
+  background-color: #555;
+  appearance: none;
+  outline: none;
+}
+
+.progress-bar::-webkit-slider-thumb {
+  appearance: none;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background: #ff80ab;
+  cursor: pointer;
+}
+
+.time {
+  color: #eee;
+  font-size: 14px;
+  width: 40px;
+}
+
+/* ------------ Dropdown Menu (3-dot / kebab) ------------ */
+.menu-wrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  padding: 0 10px;
+  align-items: flex-end;
+  width: auto;
 }
 
-/* ----------------------- Footer Component ----------------------- */
+.menu-button {
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  align-self: flex-end;
+}
+
+.dropdown-menu {
+  position: absolute;
+  bottom: 36px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+  min-width: 160px;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-menu button,
+.dropdown-menu a {
+  background: none;
+  border: none;
+  padding: 10px 16px;
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  line-height: 1.5;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+  font-weight: 500;
+}
+
+.dropdown-menu button:hover,
+.dropdown-menu a:hover {
+  background-color: #ff80ab;
+  color: white;
+  transform: scale(1.01);
+}
+
+/* Optional spacing for better card layout */
+.song-card {
+  width: 210px;             /* Adjust to match your layout */
+  background-color: #1f1f2e;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;         /* ✅ Prevents overflow! */
+}
+
+.song-image {
+  width: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.custom-audio-bar {
+  width: 100%;              /* ✅ Keep it inside card */
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;          /* ✅ Wrap on smaller space */
+  box-sizing: border-box;
+}
+
+.progress-bar {
+  flex: 1;
+  min-width: 80px;
+  max-width: 100px;         /* ✅ Prevent stretching */
+}
+
+
+/* ----------------Download Custom Colors ONLY-------------- */
+
+.rhap_container {
+  background: transparent;
+  color: #fff;
+}
+
+.rhap_progress-bar-show-download {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.rhap_progress-filled {
+  background-color: #ff80ab;
+}
+
+.rhap_play-pause-button svg,
+.rhap_volume-button svg {
+  color: #ff80ab;
+}
+
+/* Transparent minimal audio player */
+audio.custom-audio::-webkit-media-controls-panel {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+audio.custom-audio::-webkit-media-controls-enclosure {
+  background: transparent !important;
+}
+
+audio.custom-audio::-webkit-media-controls-current-time-display,
+audio.custom-audio::-webkit-media-controls-time-remaining-display {
+  color: #fff;
+}
+
+
+/* ------------ Footer ------------ */
 .footer {
   background-image: url('./images/headoot.jpeg');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; /* ✅ make sure this is set */
   color: white;
-  padding: 10px 20px 60px; /* top right/left bottom */
+  padding: 10px 20px 60px;
   text-align: center;
   font-size: 16px;
   line-height: 2.5;
@@ -306,4 +473,71 @@ html, body {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
+.page-wrapper > *:last-child {
+  margin-top: auto;
+}
+
+/* ------------ Responsive Styles ------------ */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .search-bar {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .song-card {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .section-title {
+    font-size: 22px;
+  }
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.song-card {
+  /* Existing styles... */
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+}
+
+.song-list .song-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.song-list .song-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.song-list .song-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+/* Add more nth-child if you plan to show more songs */
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 10px #ff80ab33; }
+  50% { box-shadow: 0 0 20px #ff80abcc; }
+  100% { box-shadow: 0 0 10px #ff80ab33; }
+}
+
+.song-card.liked {
+  animation: pulseGlow 2s infinite;
+}
