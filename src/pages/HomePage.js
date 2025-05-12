@@ -3,40 +3,32 @@ import '../App.css';
 
 function HomePage({ searchTerm }) {
   const [songs, setSongs] = useState([]);
-  const [favourites, setFavourites] = useState(() => {
-    const saved = localStorage.getItem('favourites');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [favourites, setFavourites] = useState([]);
   const [playingIndex, setPlayingIndex] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const [currentSong, setCurrentSong] = useState(null);
   const audioRefs = useRef([]);
 
   useEffect(() => {
     fetch('http://localhost:5000/api/songs')
-      .then((res) => res.json())
-      .then((data) => setSongs(data))
-      .catch((err) => console.error('Error fetching songs:', err));
+      .then(res => res.json())
+      .then(data => {
+        setSongs(data);
+        const savedFavourites = JSON.parse(localStorage.getItem('favourites')) || [];
+        setFavourites(savedFavourites);
+      })
+      .catch(err => console.error("Failed to fetch songs:", err));
   }, []);
 
-  const toggleFavourite = (song) => {
+  const toggleFavourite = (id) => {
     let updated;
-    if (favourites.includes(song._id)) {
-      updated = favourites.filter(id => id !== song._id);
+    if (favourites.includes(id)) {
+      updated = favourites.filter(favId => favId !== id);
     } else {
-      updated = [...favourites, song._id];
+      updated = [...favourites, id];
     }
+
     setFavourites(updated);
     localStorage.setItem('favourites', JSON.stringify(updated));
-    setDropdownOpen(null);
-  };
-
-  const addToPlaylist = (title) => {
-    const current = JSON.parse(localStorage.getItem('playlist')) || [];
-    const updated = [...new Set([...current, title])];
-    localStorage.setItem('playlist', JSON.stringify(updated));
-    alert(`${title} added to your playlist!`);
-    setDropdownOpen(null);
   };
 
   const togglePlay = (index) => {
@@ -46,14 +38,12 @@ function HomePage({ searchTerm }) {
     if (playingIndex === index) {
       audio.pause();
       setPlayingIndex(null);
-      setCurrentSong(null);
     } else {
       if (playingIndex !== null && audioRefs.current[playingIndex]) {
         audioRefs.current[playingIndex].pause();
       }
       audio.play();
       setPlayingIndex(index);
-      setCurrentSong(songs[index]);
     }
   };
 
@@ -62,99 +52,77 @@ function HomePage({ searchTerm }) {
     if (audio) audio.muted = !audio.muted;
   };
 
+  const toggleDropdown = (index) => {
+    setDropdownOpen(prev => (prev === index ? null : index));
+  };
+
+  const handleDownload = (id) => {
+    const saved = localStorage.getItem('downloads');
+    const downloaded = saved ? JSON.parse(saved) : [];
+
+    if (!downloaded.includes(id)) {
+      downloaded.push(id);
+      localStorage.setItem('downloads', JSON.stringify(downloaded));
+    }
+    setDropdownOpen(null);
+  };
+
+  const handleAddToPlaylist = (id) => {
+    const saved = localStorage.getItem('playlist');
+    const playlist = saved ? JSON.parse(saved) : [];
+
+    if (!playlist.includes(id)) {
+      playlist.push(id);
+      localStorage.setItem('playlist', JSON.stringify(playlist));
+    }
+    setDropdownOpen(null);
+  };
+
   return (
-    <>
-      <div className="home-page">
-        <h2 className="section-title">All Songs</h2>
+    <div className="home-page">
+     
 
-        <div className="song-list">
-          {songs
-            .filter(song =>
-              song.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              song.artist.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            .map((song, idx) => (
-              <div
-                key={song._id}
-                className={`song-card ${favourites.includes(song._id) ? 'liked' : ''}`}
-              >
-                <img src={song.image} alt={song.title} className="song-image" />
-                <p>{song.title}</p>
+      <div className="song-list">
+        {songs
+          .filter(song =>
+            !searchTerm ||
+            song.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            song.artist?.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+          .map((song, index) => (
+            <div key={song._id} className="song-card">
+              <img src={song.image} alt={song.title} className="song-image" />
+              <p>{song.title}</p>
 
-                <audio
-                  ref={(el) => (audioRefs.current[idx] = el)}
-                  src={song.audio}
-                />
+              <audio ref={(el) => (audioRefs.current[index] = el)} src={song.audio} />
 
-                <div className="custom-controls">
-                  <button onClick={() => togglePlay(idx)} title="Play/Pause">
-                    {playingIndex === idx ? '⏸' : '▶️'}
+              <div className="custom-controls">
+                <button onClick={() => togglePlay(index)}>{playingIndex === index ? '⏸' : '▶️'}</button>
+                <button onClick={() => toggleMute(index)}>
+                  {audioRefs.current[index]?.muted ? '🔇' : '🔊'}
+                </button>
+                <button onClick={() => toggleFavourite(song._id)} className="like-button" title="Favourite">
+                  {favourites.includes(song._id) ? '❤️' : '🤍'}
+                </button>
+
+                <div className="menu-wrapper">
+                  <button onClick={() => toggleDropdown(index)} title="Options" className="menu-button">
+                    ⋮
                   </button>
-
-                  <button onClick={() => toggleMute(idx)} title="Mute/Unmute">
-                    {audioRefs.current[idx]?.muted ? '🔇' : '🔊'}
-                  </button>
-
-                  <div className="menu-wrapper">
-                    <button
-                      onClick={() => setDropdownOpen(dropdownOpen === idx ? null : idx)}
-                      title="Options"
-                      className="menu-button"
-                    >
-                      ⋮
-                    </button>
-
-                    {dropdownOpen === idx && (
-                      <div className="dropdown-menu">
-                        <button onClick={() => toggleFavourite(song)}>❤️ Favourite</button>
-                        <button
-                          onClick={() => {
-                              // trigger actual browser download
-                              const link = document.createElement('a');
-                              link.href = song.audio;
-                              link.download = song.audio.split('/').pop(); // filename
-                              document.body.appendChild(link);
-                              link.click();
-                              document.body.removeChild(link);
-
-                              // track the download in localStorage
-                              const downloaded = JSON.parse(localStorage.getItem('downloads')) || [];
-                              const updated = [...new Set([...downloaded, song._id])];
-                              localStorage.setItem('downloads', JSON.stringify(updated));
-                                }}>
-                              ⬇️ Download
-                            </button>
-
-
-                        <button onClick={() => addToPlaylist(song.title)}>➕ Add to Playlist</button>
-                      </div>
-                    )}
-                  </div>
+                  {dropdownOpen === index && (
+                    <div className="dropdown-menu">
+                      <button onClick={() => handleAddToPlaylist(song._id)}>➕ Add to Playlist</button>
+                      <button onClick={() => handleDownload(song._id)}>⬇️ Download</button>
+                      {/* Optional delete */}
+                      {/* <button onClick={() => handleDelete(song._id)}>🗑️ Delete</button> */}
+                    </div>
+                  )}
                 </div>
               </div>
-            ))}
-        </div>
+            </div>
+          ))}
       </div>
-
-      {currentSong && (
-        <div className="now-playing-bar">
-          <img
-            className="now-playing-thumb"
-            src={currentSong.image}
-            alt={currentSong.title}
-          />
-          <div className="now-playing-info">
-            <strong>{currentSong.title}</strong>
-            <small>{currentSong.artist}</small>
-          </div>
-          <div className="player-controls">
-            <button onClick={() => togglePlay(playingIndex)} title="Play/Pause">
-              {playingIndex !== null ? '⏸' : '▶️'}
-            </button>
-          </div>
-        </div>
-      )}
-    </>
+    </div>
   );
 }
 

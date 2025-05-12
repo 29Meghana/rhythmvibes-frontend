@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import MusicPlayer from './components/MusicPlayer';
@@ -9,12 +9,12 @@ import RegisterPage from './pages/RegisterPage';
 import FavouritesPage from './pages/FavouritesPage';
 import DownloadsPage from './pages/DownloadsPage';
 import AddMusicPage from './pages/AddMusicPage';
-import '@fortawesome/fontawesome-free/css/all.min.css';
 import PlaylistPage from './pages/PlaylistPage';
-
-
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
   return (
     <Router>
       <Routes>
@@ -24,53 +24,81 @@ function App() {
         {/* Register Page */}
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Home Page */}
+        {/* Protected Routes */}
         <Route
           path="/home"
           element={
-            <div className="page-wrapper">
-              <HomePageWrapper />
-              <MusicPlayer />
-              <Footer />
-            </div>
+            isLoggedIn ? (
+              <div className="page-wrapper">
+                <HomePageWrapper />
+                <MusicPlayer />
+                <Footer />
+              </div>
+            ) : (
+              <Navigate to="/" />
+            )
           }
         />
 
-        {/* Downloads Page */}
         <Route
           path="/downloads"
           element={
-            <>
-              <Header />
-              <DownloadsPage />
-              <MusicPlayer />
-              <Footer />
-            </>
+            isLoggedIn ? (
+              <>
+                <Header />
+                <DownloadsPage />
+                <MusicPlayer />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/" />
+            )
           }
         />
 
-        {/* Favourites Page */}
         <Route
           path="/favourites"
           element={
-            <div className="page-wrapper">
-              <Header />
-              <FavouritesPage />
-              <Footer />
-            </div>
+            isLoggedIn ? (
+              <div className="page-wrapper">
+                <Header />
+                <FavouritesPage />
+                <Footer />
+              </div>
+            ) : (
+              <Navigate to="/" />
+            )
           }
         />
-        {/* Playlist page */}
-        <Route path="/playlist" element={<PlaylistPage />} />
-        {/* Admin Page: Add New Music */}
+
+        <Route
+          path="/playlist"
+          element={
+            isLoggedIn ? (
+              <>
+                <Header />
+                <PlaylistPage />
+                <MusicPlayer />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+
         <Route
           path="/add-music"
           element={
-            <>
-              <Header />
-              <AddMusicPage />
-              <Footer />
-            </>
+            isLoggedIn ? (
+              <>
+                <Header />
+                <AddMusicPage />
+                <Footer />
+              </>
+            ) : (
+              <Navigate to="/" />
+            )
           }
         />
       </Routes>

@@ -14,7 +14,10 @@ function LoginPage() {
       const res = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email: email.trim(),
+          password: password.trim()
+        }),
       });
 
       const data = await res.json();
@@ -22,14 +25,13 @@ function LoginPage() {
       if (res.ok) {
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('user', JSON.stringify(data.user));
-        alert('Login successful!');
-        navigate('/home');
+        navigate('/home'); // ✅ no alert
       } else {
-        alert(data.message || 'Login failed');
+        alert(data.message || 'Login failed'); // ⚠️ alert only on failure
       }
     } catch (error) {
-      alert('Something went wrong. Please try again.');
-      console.error(error);
+      alert('🚫 Error connecting to server.');
+      console.error('Login error:', error);
     }
   };
 

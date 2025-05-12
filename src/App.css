@@ -1,4 +1,6 @@
-/* ------------ General Reset ------------ */ 
+/* ------------ General Reset ------------ */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -6,10 +8,13 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to bottom right, #0f0f0f, #1c1c2b, #2c1c2c);
-  color: white;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to bottom right, #121212, #1e1e2e, #2a1e2e);
+  color: #f1f1f1;
   overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  font-size: 15px;
 }
 
 /* ------------ Header ------------ */
@@ -21,6 +26,8 @@ body {
   padding: 15px 30px;
   background: linear-gradient(to right, #1b1b2f, #1e1e1e);
   border-bottom: 1px solid #333;
+  position: relative;
+  z-index: 10;
 }
 
 .logo {
@@ -32,16 +39,57 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  position: relative;
+  z-index: 1;
 }
 
-.nav-tabs a {
+.nav-tabs a,
+.nav-tabs button {
+  position: relative;
   color: white;
   text-decoration: none;
   font-weight: bold;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 10px;
+  z-index: 2;
+  transition: color 0.3s ease;
 }
 
-.nav-tabs a:hover {
+.nav-tabs a:hover,
+.nav-tabs button:hover {
   color: #ff80ab;
+}
+
+.nav-tabs a.active::before {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160%;
+  height: 10px;
+  background: radial-gradient(ellipse at center, rgba(255, 128, 171, 0.5), transparent);
+  border-radius: 50%;
+  filter: blur(10px);
+  animation: auraFlow 2s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes auraFlow {
+  0% {
+    transform: translateX(-50%) scaleX(0.4);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateX(-50%) scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) scaleX(0.4);
+    opacity: 0.6;
+  }
 }
 
 /* ------------ Header Search ------------ */
@@ -105,18 +153,18 @@ body {
   z-index: 1;
 }
 
-
 .song-card {
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 210px;
+  background-color: #1f1f2e;
   border-radius: 16px;
   padding: 16px;
-  width: 220px;
-  text-align: center;
-  transition: transform 0.2s ease;
-  position: relative;
-  overflow: visible !important;
-  z-index: 1;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
 }
 
 .song-image {
@@ -142,13 +190,14 @@ body {
 
 .custom-controls {
   display: flex;
-  justify-content: space-between; /* 🔁 evenly spaced across full width */
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   padding: 8px 0 0;
-  gap: 10px; /* Optional: more spacing between buttons */
+  gap: 10px;
   box-sizing: border-box;
 }
+
 .custom-controls button,
 .menu-wrapper {
   flex: 1;
@@ -168,162 +217,6 @@ body {
 
 .custom-controls button:hover {
   transform: scale(1.15);
-}
-
-/* ------------ Search Bar ------------ */
-.search-bar-box {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.search-bar-box input {
-  width: 280px;
-  padding: 10px 15px;
-  border-radius: 8px;
-  border: none;
-  font-size: 16px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-.search-bar-box input::placeholder {
-  color: #ccc;
-}
-
-/* ------------ Now Playing Bar ------------ */
-.now-playing-bar {
-  position: sticky;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #181818;
-  border-top: 1px solid #444;
-  padding: 10px 20px;
-  color: white;
-  z-index: 999;
-  gap: 20px;
-}
-
-.now-playing-thumb {
-  width: 50px;
-  height: 50px;
-  border-radius: 6px;
-  object-fit: cover;
-}
-
-.now-playing-info {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.now-playing-info strong {
-  font-size: 14px;
-}
-
-.now-playing-info small {
-  font-size: 12px;
-  color: #ccc;
-}
-
-.player-controls button {
-  font-size: 22px;
-  background: none;
-  border: none;
-  color: white;
-  margin: 0 8px;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.player-controls button:hover {
-  color: #ff80ab;
-}
-
-/* ------------ Like Button ------------ */
-.like-button {
-  background: none;
-  border: none;
-  font-size: 26px;
-  cursor: pointer;
-  transition: transform 0.2s ease, color 0.3s ease;
-}
-
-.like-button:hover {
-  transform: scale(1.2);
-  color: #ff80ab;
-}
-
-/* ------------ Audio Player ------------ */
-.rhap_container {
-  width: 100% !important;
-  border-radius: 10px !important;
-  overflow: hidden;
-  font-size: 12px !important;
-  padding: 4px;
-  box-sizing: border-box;
-}
-
-.rhap_controls-section svg,
-.rhap_volume-bar,
-.rhap_progress-bar {
-  max-width: 100%;
-}
-
-.rhap_progress-indicator,
-.rhap_progress-filled {
-  background-color: #ff80ab;
-}
-
-.rhap_time {
-  font-size: 10px;
-}
-
-/* ------------ Audio Control Bar ------------ */
-.custom-audio-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background-color: #1c1c2b;
-  border-radius: 12px;
-  padding: 8px 16px;
-  margin-top: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-}
-
-.play-btn,
-.volume-btn,
-.menu-button {
-  background: none;
-  border: none;
-  font-size: 18px;
-  color: white;
-  cursor: pointer;
-}
-
-.progress-bar {
-  flex: 1;
-  height: 4px;
-  border-radius: 4px;
-  background-color: #555;
-  appearance: none;
-  outline: none;
-}
-
-.progress-bar::-webkit-slider-thumb {
-  appearance: none;
-  height: 12px;
-  width: 12px;
-  border-radius: 50%;
-  background: #ff80ab;
-  cursor: pointer;
-}
-
-.time {
-  color: #eee;
-  font-size: 14px;
-  width: 40px;
 }
 
 /* ------------ Dropdown Menu (3-dot / kebab) ------------ */
@@ -385,85 +278,33 @@ body {
   transform: scale(1.01);
 }
 
-/* Optional spacing for better card layout */
-.song-card {
-  width: 210px;             /* Adjust to match your layout */
-  background-color: #1f1f2e;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;         /* ✅ Prevents overflow! */
+/* ------------ Audio Player Kebab Menu Styling ------------ */
+audio::-webkit-media-controls-menu {
+  background-color: #1f1f2e !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6) !important;
 }
 
-.song-image {
-  width: 100%;
-  border-radius: 12px;
-  object-fit: cover;
-}
-
-.custom-audio-bar {
-  width: 100%;              /* ✅ Keep it inside card */
-  max-width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-  flex-wrap: wrap;          /* ✅ Wrap on smaller space */
-  box-sizing: border-box;
-}
-
-.progress-bar {
-  flex: 1;
-  min-width: 80px;
-  max-width: 100px;         /* ✅ Prevent stretching */
-}
-
-
-/* ----------------Download Custom Colors ONLY-------------- */
-
-.rhap_container {
-  background: transparent;
-  color: #fff;
-}
-
-.rhap_progress-bar-show-download {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-.rhap_progress-filled {
-  background-color: #ff80ab;
-}
-
-.rhap_play-pause-button svg,
-.rhap_volume-button svg {
-  color: #ff80ab;
-}
-
-/* Transparent minimal audio player */
-audio.custom-audio::-webkit-media-controls-panel {
+audio::-webkit-media-controls-menu-item {
   background-color: transparent !important;
-  box-shadow: none !important;
+  color: #fff !important;
+  padding: 10px 12px;
+  font-size: 14px;
 }
 
-audio.custom-audio::-webkit-media-controls-enclosure {
-  background: transparent !important;
+audio::-webkit-media-controls-menu-item:hover {
+  background-color: #ff80ab !important;
+  color: white !important;
+  border-radius: 6px;
 }
-
-audio.custom-audio::-webkit-media-controls-current-time-display,
-audio.custom-audio::-webkit-media-controls-time-remaining-display {
-  color: #fff;
-}
-
 
 /* ------------ Footer ------------ */
 .footer {
   background-image: url('./images/headoot.jpeg');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat; /* ✅ make sure this is set */
+  background-repeat: no-repeat;
   color: white;
   padding: 10px 20px 60px;
   text-align: center;
@@ -505,6 +346,7 @@ audio.custom-audio::-webkit-media-controls-time-remaining-display {
     font-size: 22px;
   }
 }
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -516,22 +358,6 @@ audio.custom-audio::-webkit-media-controls-time-remaining-display {
   }
 }
 
-.song-card {
-  /* Existing styles... */
-  animation: fadeInUp 0.6s ease forwards;
-  opacity: 0;
-}
-
-.song-list .song-card:nth-child(1) {
-  animation-delay: 0.1s;
-}
-.song-list .song-card:nth-child(2) {
-  animation-delay: 0.2s;
-}
-.song-list .song-card:nth-child(3) {
-  animation-delay: 0.3s;
-}
-/* Add more nth-child if you plan to show more songs */
 @keyframes pulseGlow {
   0% { box-shadow: 0 0 10px #ff80ab33; }
   50% { box-shadow: 0 0 20px #ff80abcc; }
@@ -540,4 +366,12 @@ audio.custom-audio::-webkit-media-controls-time-remaining-display {
 
 .song-card.liked {
   animation: pulseGlow 2s infinite;
+}
+
+/* Remove white background from heart icon */
+.like-button img, .song-card img.heart-icon {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  filter: none !important;
 }
