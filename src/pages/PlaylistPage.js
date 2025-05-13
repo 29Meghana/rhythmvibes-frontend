@@ -5,16 +5,19 @@ function PlaylistPage() {
   const [playlistSongs, setPlaylistSongs] = useState([]);
   const [playingIndex, setPlayingIndex] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [favourites, setFavourites] = useState([]);
   const audioRefs = useRef([]);
 
   useEffect(() => {
     fetch('http://localhost:5000/api/songs')
       .then(res => res.json())
       .then(data => {
-        const saved = localStorage.getItem('playlist');
-        const playlistIds = saved ? JSON.parse(saved) : [];
+        const playlistIds = JSON.parse(localStorage.getItem('playlist')) || [];
+        const favIds = JSON.parse(localStorage.getItem('favourites')) || [];
+
         const playlist = data.filter(song => playlistIds.includes(song._id));
         setPlaylistSongs(playlist);
+        setFavourites(favIds);
       })
       .catch(err => console.error("Error fetching songs:", err));
   }, []);
@@ -45,20 +48,15 @@ function PlaylistPage() {
   };
 
   const handleRemoveFromPlaylist = (id) => {
-    const saved = localStorage.getItem('playlist');
-    const playlistIds = saved ? JSON.parse(saved) : [];
-
+    const playlistIds = JSON.parse(localStorage.getItem('playlist')) || [];
     const updatedIds = playlistIds.filter(songId => songId !== id);
     localStorage.setItem('playlist', JSON.stringify(updatedIds));
-
     setPlaylistSongs(prev => prev.filter(song => song._id !== id));
     setDropdownOpen(null);
   };
 
   const handleDownload = (id) => {
-    const saved = localStorage.getItem('downloads');
-    const downloaded = saved ? JSON.parse(saved) : [];
-
+    const downloaded = JSON.parse(localStorage.getItem('downloads')) || [];
     if (!downloaded.includes(id)) {
       downloaded.push(id);
       localStorage.setItem('downloads', JSON.stringify(downloaded));
@@ -66,13 +64,14 @@ function PlaylistPage() {
   };
 
   const handleFavourite = (id) => {
-    const saved = localStorage.getItem('favourites');
-    const favourites = saved ? JSON.parse(saved) : [];
-
-    if (!favourites.includes(id)) {
-      favourites.push(id);
-      localStorage.setItem('favourites', JSON.stringify(favourites));
+    let updated;
+    if (favourites.includes(id)) {
+      updated = favourites.filter(favId => favId !== id);
+    } else {
+      updated = [...favourites, id];
     }
+    setFavourites(updated);
+    localStorage.setItem('favourites', JSON.stringify(updated));
   };
 
   return (
@@ -99,6 +98,14 @@ function PlaylistPage() {
                   {audioRefs.current[idx]?.muted ? '🔇' : '🔊'}
                 </button>
 
+                <button
+                  onClick={() => handleFavourite(song._id)}
+                  className="like-button"
+                  title="Favourite"
+                >
+                  {favourites.includes(song._id) ? '❤️' : '🤍'}
+                </button>
+
                 <div className="menu-wrapper">
                   <button
                     onClick={() => toggleDropdown(idx)}
@@ -110,7 +117,6 @@ function PlaylistPage() {
 
                   {dropdownOpen === idx && (
                     <div className="dropdown-menu">
-                      <button onClick={() => handleFavourite(song._id)}>❤️ Favourite</button>
                       <button onClick={() => handleDownload(song._id)}>⬇️ Download</button>
                       <button onClick={() => handleRemoveFromPlaylist(song._id)}>🗑️ Remove</button>
                     </div>

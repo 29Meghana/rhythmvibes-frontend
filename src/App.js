@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -15,23 +15,38 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 function App() {
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
+  const [currentSong, setCurrentSong] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
+
+  const handleSongChange = (song) => {
+    setCurrentSong(song);
+    setIsPlaying(true);
+  };
+
+  const handlePlayPause = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
   return (
     <Router>
+      {isLoggedIn && <Header />}
       <Routes>
-        {/* Login Page */}
         <Route path="/" element={<LoginPage />} />
-
-        {/* Register Page */}
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Protected Routes */}
         <Route
           path="/home"
           element={
             isLoggedIn ? (
               <div className="page-wrapper">
-                <HomePageWrapper />
-                <MusicPlayer />
+                <HomePageWrapper onSongChange={handleSongChange} />
                 <Footer />
               </div>
             ) : (
@@ -45,9 +60,7 @@ function App() {
           element={
             isLoggedIn ? (
               <>
-                <Header />
-                <DownloadsPage />
-                <MusicPlayer />
+                <DownloadsPage onSongChange={handleSongChange} />
                 <Footer />
               </>
             ) : (
@@ -61,8 +74,7 @@ function App() {
           element={
             isLoggedIn ? (
               <div className="page-wrapper">
-                <Header />
-                <FavouritesPage />
+                <FavouritesPage onSongChange={handleSongChange} />
                 <Footer />
               </div>
             ) : (
@@ -76,9 +88,7 @@ function App() {
           element={
             isLoggedIn ? (
               <>
-                <Header />
-                <PlaylistPage />
-                <MusicPlayer />
+                <PlaylistPage onSongChange={handleSongChange} />
                 <Footer />
               </>
             ) : (
@@ -92,7 +102,6 @@ function App() {
           element={
             isLoggedIn ? (
               <>
-                <Header />
                 <AddMusicPage />
                 <Footer />
               </>
@@ -102,6 +111,16 @@ function App() {
           }
         />
       </Routes>
+
+      {/* Global Music Player */}
+      {isLoggedIn && (
+        <MusicPlayer
+          currentSong={currentSong}
+          isPlaying={isPlaying}
+          onPlayPause={handlePlayPause}
+          audioRef={audioRef}
+        />
+      )}
     </Router>
   );
 }

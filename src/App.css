@@ -219,6 +219,54 @@ body {
   transform: scale(1.15);
 }
 
+/*now playing */
+.now-playing-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #111;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-top: 1px solid #444;
+  z-index: 1000;
+}
+
+.now-playing-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.now-playing-thumb {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.progress-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 40%;
+}
+
+.progress-bar input[type="range"] {
+  width: 100%;
+}
+
 /* ------------ Dropdown Menu (3-dot / kebab) ------------ */
 .menu-wrapper {
   position: relative;

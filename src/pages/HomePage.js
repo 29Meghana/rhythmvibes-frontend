@@ -106,18 +106,22 @@ function HomePage({ searchTerm }) {
                 </button>
 
                 <div className="menu-wrapper">
-                  <button onClick={() => toggleDropdown(index)} title="Options" className="menu-button">
-                    ⋮
-                  </button>
-                  {dropdownOpen === index && (
-                    <div className="dropdown-menu">
-                      <button onClick={() => handleAddToPlaylist(song._id)}>➕ Add to Playlist</button>
-                      <button onClick={() => handleDownload(song._id)}>⬇️ Download</button>
-                      {/* Optional delete */}
-                      {/* <button onClick={() => handleDelete(song._id)}>🗑️ Delete</button> */}
-                    </div>
-                  )}
-                </div>
+  <button
+    onClick={() => toggleDropdown(song._id)} // Use song._id as a unique key
+    title="Options"
+    className="menu-button"
+  >
+    ⋮
+  </button>
+
+  {dropdownOpen === song._id && (
+    <div className="dropdown-menu">
+      <button onClick={() => handleAddToPlaylist(song._id)}>➕ Add to Playlist</button>
+      <button onClick={() => handleDownload(song._id)}>⬇️ Download</button>
+    </div>
+  )}
+</div>
+
               </div>
             </div>
           ))}

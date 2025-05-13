@@ -1,16 +1,8 @@
-import React, { useState } from 'react';
-import Header from '../components/Header';
+import React from 'react';
 import HomePage from './HomePage';
 
-function HomePageWrapper() {
-  const [searchTerm, setSearchTerm] = useState('');
-
-  return (
-    <>
-      <Header onSearch={setSearchTerm} />
-      <HomePage searchTerm={searchTerm} />
-    </>
-  );
+function HomePageWrapper({ onSongChange }) {
+  return <HomePage onSongChange={onSongChange} />;
 }
 
 export default HomePageWrapper;

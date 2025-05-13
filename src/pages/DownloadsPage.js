@@ -3,6 +3,7 @@ import '../App.css';
 
 function DownloadsPage() {
   const [songs, setSongs] = useState([]);
+  const [favourites, setFavourites] = useState([]);
   const [playingIndex, setPlayingIndex] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const audioRefs = useRef([]);
@@ -11,10 +12,12 @@ function DownloadsPage() {
     fetch('http://localhost:5000/api/songs')
       .then(res => res.json())
       .then(data => {
-        const saved = localStorage.getItem('downloads');
-        const downloadedIds = saved ? JSON.parse(saved) : [];
+        const downloadedIds = JSON.parse(localStorage.getItem('downloads')) || [];
+        const favIds = JSON.parse(localStorage.getItem('favourites')) || [];
+
         const downloadedSongs = data.filter(song => downloadedIds.includes(song._id));
         setSongs(downloadedSongs);
+        setFavourites(favIds);
       })
       .catch(err => console.error("Error fetching songs:", err));
   }, []);
@@ -45,13 +48,29 @@ function DownloadsPage() {
   };
 
   const handleDeleteDownload = (id) => {
-    const saved = localStorage.getItem('downloads');
-    const downloadedIds = saved ? JSON.parse(saved) : [];
-
+    const downloadedIds = JSON.parse(localStorage.getItem('downloads')) || [];
     const updatedIds = downloadedIds.filter(songId => songId !== id);
     localStorage.setItem('downloads', JSON.stringify(updatedIds));
-
     setSongs(prev => prev.filter(song => song._id !== id));
+    setDropdownOpen(null);
+  };
+
+  const handleFavourite = (id) => {
+    let updated;
+    if (favourites.includes(id)) {
+      updated = favourites.filter(favId => favId !== id);
+    } else {
+      updated = [...favourites, id];
+    }
+    setFavourites(updated);
+    localStorage.setItem('favourites', JSON.stringify(updated));
+  };
+
+  const handleAddToPlaylist = (id) => {
+    const current = JSON.parse(localStorage.getItem('playlist')) || [];
+    const updated = [...new Set([...current, id])];
+    localStorage.setItem('playlist', JSON.stringify(updated));
+    alert('Added to Playlist!');
     setDropdownOpen(null);
   };
 
@@ -79,6 +98,14 @@ function DownloadsPage() {
                   {audioRefs.current[idx]?.muted ? '🔇' : '🔊'}
                 </button>
 
+                <button
+                  onClick={() => handleFavourite(song._id)}
+                  className="like-button"
+                  title="Favourite"
+                >
+                  {favourites.includes(song._id) ? '❤️' : '🤍'}
+                </button>
+
                 <div className="menu-wrapper">
                   <button
                     onClick={() => toggleDropdown(idx)}
@@ -90,8 +117,7 @@ function DownloadsPage() {
 
                   {dropdownOpen === idx && (
                     <div className="dropdown-menu">
-                      <button>➕ Add to Playlist</button>
-                      <button>❤️ Favourite</button>
+                      <button onClick={() => handleAddToPlaylist(song._id)}>➕ Add to Playlist</button>
                       <button onClick={() => handleDeleteDownload(song._id)}>🗑️ Delete </button>
                     </div>
                   )}

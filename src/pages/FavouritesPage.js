@@ -14,8 +14,7 @@ function FavouritesPage() {
         const res = await fetch('http://localhost:5000/api/songs');
         const data = await res.json();
 
-        const saved = localStorage.getItem('favourites');
-        const favIds = saved ? JSON.parse(saved) : [];
+        const favIds = JSON.parse(localStorage.getItem('favourites')) || [];
 
         setFavourites(favIds);
         const favSongs = data.filter(song => favIds.includes(song._id));
@@ -105,6 +104,14 @@ function FavouritesPage() {
                   {audioRefs.current[idx]?.muted ? '🔇' : '🔊'}
                 </button>
 
+                <button
+                  onClick={() => removeFromFavourites(song._id)}
+                  className="like-button"
+                  title="Remove from Favourites"
+                >
+                  💔
+                </button>
+
                 <div className="menu-wrapper">
                   <button
                     onClick={() => toggleDropdown(idx)}
@@ -121,14 +128,6 @@ function FavouritesPage() {
                     </div>
                   )}
                 </div>
-
-                <button
-                  onClick={() => removeFromFavourites(song._id)}
-                  className="like-button"
-                  title="Remove from Favourites"
-                >
-                  💔
-                </button>
               </div>
             </div>
           ))
