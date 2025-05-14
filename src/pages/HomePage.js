@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../App.css';
 
-function HomePage({ searchTerm, onSongSelect }) {
+function HomePage({ searchTerm, onSongSelect, onListReady }) {
   const [songs, setSongs] = useState([]);
   const [favourites, setFavourites] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(null);
@@ -11,6 +11,7 @@ function HomePage({ searchTerm, onSongSelect }) {
       .then(res => res.json())
       .then(data => {
         setSongs(data);
+        onListReady(data); // send songs to App.js
         const savedFavourites = JSON.parse(localStorage.getItem('favourites')) || [];
         setFavourites(savedFavourites);
       })
@@ -24,7 +25,6 @@ function HomePage({ searchTerm, onSongSelect }) {
     } else {
       updated = [...favourites, id];
     }
-
     setFavourites(updated);
     localStorage.setItem('favourites', JSON.stringify(updated));
   };
@@ -68,7 +68,7 @@ function HomePage({ searchTerm, onSongSelect }) {
               <p>{song.title}</p>
 
               <div className="custom-controls">
-                <button onClick={() => onSongSelect(song)}>▶️</button>
+                <button onClick={() => onSongSelect(song, index)}>▶️</button>
                 <button>🔊</button>
                 <button onClick={() => toggleFavourite(song._id)} className="like-button" title="Favourite">
                   {favourites.includes(song._id) ? '❤️' : '🤍'}

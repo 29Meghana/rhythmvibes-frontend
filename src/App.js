@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -17,7 +17,37 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const [songList, setSongList] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(-1);
+  const [isShuffle, setIsShuffle] = useState(false);
+  const [isRepeat, setIsRepeat] = useState(false);
+
   const audioRef = useRef(null);
+
+  const handleSongChange = (song, index = -1) => {
+    setCurrentSong(song);
+    setIsPlaying(true);
+    if (index !== -1) setCurrentIndex(index);
+    setTimeout(() => {
+      if (audioRef.current) audioRef.current.play();
+    }, 100);
+  };
+
+  const handleNext = useCallback(() => {
+    if (songList.length === 0) return;
+
+    let nextIndex;
+    if (isShuffle) {
+      do {
+        nextIndex = Math.floor(Math.random() * songList.length);
+      } while (nextIndex === currentIndex);
+    } else {
+      nextIndex = (currentIndex + 1) % songList.length;
+    }
+
+    handleSongChange(songList[nextIndex], nextIndex);
+  }, [songList, isShuffle, currentIndex]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -28,32 +58,27 @@ function App() {
       setDuration(audio.duration || 0);
     };
 
+    const handleEnded = () => {
+      if (isRepeat) {
+        audio.currentTime = 0;
+        audio.play();
+      } else {
+        handleNext();
+      }
+    };
+
+    audio.volume = volume;
+
     audio.addEventListener('timeupdate', updateProgress);
     audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('ended', handleEnded);
 
     return () => {
       audio.removeEventListener('timeupdate', updateProgress);
       audio.removeEventListener('loadedmetadata', updateProgress);
+      audio.removeEventListener('ended', handleEnded);
     };
-  }, [currentSong]);
-
-  useEffect(() => {
-    if (currentSong) {
-      console.log("🎶 Now playing:", currentSong.title);
-    }
-  }, [currentSong]);
-
-  useEffect(() => {
-    document.body.classList.toggle('song-playing', !!currentSong);
-  }, [currentSong]);
-
-  const handleSongChange = (song) => {
-    setCurrentSong(song);
-    setIsPlaying(true);
-    setTimeout(() => {
-      if (audioRef.current) audioRef.current.play();
-    }, 100);
-  };
+  }, [currentSong, isRepeat, handleNext, volume]);
 
   const handlePlayPause = () => {
     if (!audioRef.current) return;
@@ -63,6 +88,13 @@ function App() {
       audioRef.current.play();
     }
     setIsPlaying(!isPlaying);
+  };
+
+  const handlePrevious = () => {
+    if (songList.length === 0) return;
+
+    const prevIndex = (currentIndex - 1 + songList.length) % songList.length;
+    handleSongChange(songList[prevIndex], prevIndex);
   };
 
   const formatTime = (time) => {
@@ -75,21 +107,22 @@ function App() {
   return (
     <Router>
       {isLoggedIn && <Header />}
-
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/home" element={isLoggedIn ? <HomePageWrapper onSongChange={handleSongChange} currentSong={currentSong} /> : <Navigate to="/" />} />
-        <Route path="/downloads" element={isLoggedIn ? <DownloadsPage onSongChange={handleSongChange} /> : <Navigate to="/" />} />
-        <Route path="/favourites" element={isLoggedIn ? <FavouritesPage onSongChange={handleSongChange} /> : <Navigate to="/" />} />
-        <Route path="/playlist" element={isLoggedIn ? <PlaylistPage onSongChange={handleSongChange} /> : <Navigate to="/" />} />
-        <Route path="/add-music" element={isLoggedIn ? <AddMusicPage /> : <Navigate to="/" />} />
-      </Routes>
+      
+      <div className="main-content-wrapper">
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/home" element={isLoggedIn ? <HomePageWrapper onSongChange={handleSongChange} onListReady={setSongList} currentSong={currentSong} /> : <Navigate to="/" />} />
+          <Route path="/downloads" element={isLoggedIn ? <DownloadsPage onSongChange={handleSongChange} /> : <Navigate to="/" />} />
+          <Route path="/favourites" element={isLoggedIn ? <FavouritesPage onSongChange={handleSongChange} /> : <Navigate to="/" />} />
+          <Route path="/playlist" element={isLoggedIn ? <PlaylistPage onSongChange={handleSongChange} /> : <Navigate to="/" />} />
+          <Route path="/add-music" element={isLoggedIn ? <AddMusicPage /> : <Navigate to="/" />} />
+        </Routes>
+      </div>
 
       {isLoggedIn && currentSong && (
         <div className="spotify-player-bar">
           <audio ref={audioRef} src={currentSong.audio} autoPlay />
-
           <div className="player-left">
             <img src={currentSong.image} alt={currentSong.title} />
             <div>
@@ -100,14 +133,21 @@ function App() {
 
           <div className="player-center">
             <div className="controls-and-progress">
-              <button title="Shuffle"><i className="fas fa-random"></i></button>
-              <button title="Previous"><i className="fas fa-step-backward"></i></button>
+              <button title="Shuffle" onClick={() => setIsShuffle(!isShuffle)}>
+                <i className={`fas fa-random ${isShuffle ? 'active-icon' : ''}`}></i>
+              </button>
+              <button title="Previous" onClick={handlePrevious}>
+                <i className="fas fa-step-backward"></i>
+              </button>
               <button title="Play/Pause" onClick={handlePlayPause}>
                 <i className={`fas ${isPlaying ? 'fa-pause' : 'fa-play'}`}></i>
               </button>
-              <button title="Next"><i className="fas fa-step-forward"></i></button>
-              <button title="Repeat"><i className="fas fa-redo"></i></button>
-
+              <button title="Next" onClick={handleNext}>
+                <i className="fas fa-step-forward"></i>
+              </button>
+              <button title="Repeat" onClick={() => setIsRepeat(!isRepeat)}>
+                <i className={`fas fa-redo ${isRepeat ? 'active-icon' : ''}`}></i>
+              </button>
               <span>{formatTime(progress)}</span>
               <input
                 type="range"
@@ -126,7 +166,18 @@ function App() {
 
           <div className="player-right">
             <span><i className="fas fa-headphones"></i></span>
-            <span><i className="fas fa-volume-up"></i></span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <i className="fas fa-volume-up"></i>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={volume}
+                onChange={(e) => setVolume(parseFloat(e.target.value))}
+                style={{ width: '80px' }}
+              />
+            </div>
           </div>
         </div>
       )}

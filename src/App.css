@@ -411,6 +411,10 @@ audio::-webkit-media-controls-menu-item:hover {
     transform: translateY(0);
   }
 }
+.active-icon {
+  color: #ff80ab;
+  text-shadow: 0 0 6px #ff80ab;
+}
 
 /* ------------ Footer ------------ */
 .footer {
