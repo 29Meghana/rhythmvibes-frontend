@@ -219,54 +219,6 @@ body {
   transform: scale(1.15);
 }
 
-/*now playing */
-.now-playing-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #111;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
-  border-top: 1px solid #444;
-  z-index: 1000;
-}
-
-.now-playing-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.now-playing-thumb {
-  width: 50px;
-  height: 50px;
-  border-radius: 8px;
-  object-fit: cover;
-}
-
-.player-controls {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex-grow: 1;
-  justify-content: center;
-}
-
-.progress-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 40%;
-}
-
-.progress-bar input[type="range"] {
-  width: 100%;
-}
-
 /* ------------ Dropdown Menu (3-dot / kebab) ------------ */
 .menu-wrapper {
   position: relative;
@@ -345,6 +297,68 @@ audio::-webkit-media-controls-menu-item:hover {
   background-color: #ff80ab !important;
   color: white !important;
   border-radius: 6px;
+}
+.now-playing-bar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #181818;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
+  z-index: 1000;
+}
+
+.now-playing-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 200px;
+}
+
+.now-playing-thumb {
+  width: 55px;
+  height: 55px;
+  border-radius: 6px;
+}
+
+.now-playing-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.now-playing-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.player-controls {
+  display: flex;
+  gap: 20px;
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 400px;
+}
+
+.progress-bar {
+  width: 100%;
+}
+
+.now-playing-right {
+  font-size: 12px;
+  color: #aaa;
+  min-width: 150px;
+  text-align: right;
 }
 
 /* ------------ Footer ------------ */
