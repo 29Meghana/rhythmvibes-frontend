@@ -36,7 +36,6 @@ function HomePage({ searchTerm, onSongSelect }) {
   const handleDownload = (id) => {
     const saved = localStorage.getItem('downloads');
     const downloaded = saved ? JSON.parse(saved) : [];
-
     if (!downloaded.includes(id)) {
       downloaded.push(id);
       localStorage.setItem('downloads', JSON.stringify(downloaded));
@@ -47,7 +46,6 @@ function HomePage({ searchTerm, onSongSelect }) {
   const handleAddToPlaylist = (id) => {
     const saved = localStorage.getItem('playlist');
     const playlist = saved ? JSON.parse(saved) : [];
-
     if (!playlist.includes(id)) {
       playlist.push(id);
       localStorage.setItem('playlist', JSON.stringify(playlist));
@@ -77,14 +75,7 @@ function HomePage({ searchTerm, onSongSelect }) {
                 </button>
 
                 <div className="menu-wrapper">
-                  <button
-                    onClick={() => toggleDropdown(index)}
-                    title="Options"
-                    className="menu-button"
-                  >
-                    ⋮
-                  </button>
-
+                  <button onClick={() => toggleDropdown(index)} title="Options" className="menu-button">⋮</button>
                   {dropdownOpen === index && (
                     <div className="dropdown-menu">
                       <button onClick={() => handleAddToPlaylist(song._id)}>➕ Add to Playlist</button>
@@ -97,8 +88,6 @@ function HomePage({ searchTerm, onSongSelect }) {
           ))}
       </div>
     </div>
-
-    
   );
 }
 
