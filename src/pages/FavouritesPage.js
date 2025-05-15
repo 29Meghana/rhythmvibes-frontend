@@ -1,12 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../App.css';
 
-function FavouritesPage() {
+function FavouritesPage({ onSongChange }) {
   const [favourites, setFavourites] = useState([]);
   const [songs, setSongs] = useState([]);
-  const [playingIndex, setPlayingIndex] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(null);
-  const audioRefs = useRef([]);
 
   useEffect(() => {
     const fetchSongs = async () => {
@@ -15,8 +13,8 @@ function FavouritesPage() {
         const data = await res.json();
 
         const favIds = JSON.parse(localStorage.getItem('favourites')) || [];
-
         setFavourites(favIds);
+
         const favSongs = data.filter(song => favIds.includes(song._id));
         setSongs(favSongs);
       } catch (err) {
@@ -26,27 +24,6 @@ function FavouritesPage() {
 
     fetchSongs();
   }, []);
-
-  const togglePlay = (index) => {
-    const audio = audioRefs.current[index];
-    if (!audio) return;
-
-    if (playingIndex === index) {
-      audio.pause();
-      setPlayingIndex(null);
-    } else {
-      if (playingIndex !== null && audioRefs.current[playingIndex]) {
-        audioRefs.current[playingIndex].pause();
-      }
-      audio.play();
-      setPlayingIndex(index);
-    }
-  };
-
-  const toggleMute = (index) => {
-    const audio = audioRefs.current[index];
-    if (audio) audio.muted = !audio.muted;
-  };
 
   const toggleDropdown = (index) => {
     setDropdownOpen(prev => (prev === index ? null : index));
@@ -93,16 +70,8 @@ function FavouritesPage() {
               <img src={song.image} alt={song.title} className="song-image" />
               <p>{song.title}</p>
 
-              <audio ref={(el) => (audioRefs.current[idx] = el)} src={song.audio} />
-
               <div className="custom-controls">
-                <button onClick={() => togglePlay(idx)} title="Play/Pause">
-                  {playingIndex === idx ? '⏸' : '▶️'}
-                </button>
-
-                <button onClick={() => toggleMute(idx)} title="Mute/Unmute">
-                  {audioRefs.current[idx]?.muted ? '🔇' : '🔊'}
-                </button>
+                <button onClick={() => onSongChange(song, idx)} title="Play">▶️</button>
 
                 <button
                   onClick={() => removeFromFavourites(song._id)}
