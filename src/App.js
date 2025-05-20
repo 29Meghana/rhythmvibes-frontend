@@ -9,6 +9,7 @@ import FavouritesPage from './pages/FavouritesPage';
 import DownloadsPage from './pages/DownloadsPage';
 import AddMusicPage from './pages/AddMusicPage';
 import PlaylistPage from './pages/PlaylistPage';
+import PremiumPage from './pages/PremiumPage'; // ✅ NEW
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
@@ -92,7 +93,6 @@ function App() {
 
   const handlePrevious = () => {
     if (songList.length === 0) return;
-
     const prevIndex = (currentIndex - 1 + songList.length) % songList.length;
     handleSongChange(songList[prevIndex], prevIndex);
   };
@@ -107,7 +107,7 @@ function App() {
   return (
     <Router>
       {isLoggedIn && <Header />}
-      
+
       <div className="main-content-wrapper">
         <Routes>
           <Route path="/" element={<LoginPage />} />
@@ -117,6 +117,7 @@ function App() {
           <Route path="/favourites" element={isLoggedIn ? <FavouritesPage onSongChange={handleSongChange} /> : <Navigate to="/" />} />
           <Route path="/playlist" element={isLoggedIn ? <PlaylistPage onSongChange={handleSongChange} /> : <Navigate to="/" />} />
           <Route path="/add-music" element={isLoggedIn ? <AddMusicPage /> : <Navigate to="/" />} />
+          <Route path="/premium" element={isLoggedIn ? <PremiumPage /> : <Navigate to="/" />} /> {/* ✅ New Premium Route */}
         </Routes>
       </div>
 
