@@ -11,12 +11,12 @@ function HomePage({ searchTerm, onSongSelect, onListReady }) {
       .then(res => res.json())
       .then(data => {
         setSongs(data);
-        onListReady(data); // send songs to App.js
+        onListReady?.(data); // ✅ optional chaining to avoid warning
         const savedFavourites = JSON.parse(localStorage.getItem('favourites')) || [];
         setFavourites(savedFavourites);
       })
       .catch(err => console.error("Failed to fetch songs:", err));
-  }, []);
+  }, [onListReady]); // ✅ Added dependency
 
   const toggleFavourite = (id) => {
     let updated;

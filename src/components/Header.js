@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import '../App.css';
 import logo from '../images/logo.png';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 function Header({ onSearch }) {
   const [search, setSearch] = useState('');
   const [user, setUser] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ used to detect current route
+  const location = useLocation();
 
   useEffect(() => {
     const stored = localStorage.getItem('user');
@@ -25,37 +26,18 @@ function Header({ onSearch }) {
   return (
     <header className="header">
       <div className="logo-container">
-        <a href="/home">
+        <Link to="/home">
           <img src={logo} alt="Rhythmvibes Logo" className="logo" />
-        </a>
+        </Link>
       </div>
 
       <nav className="nav-tabs">
-        <a href="/home" className={location.pathname === '/home' ? 'active' : ''}>Home</a>
-        <a href="/playlist" className={location.pathname === '/playlist' ? 'active' : ''}>Your Playlist</a>
-        <a href="/downloads" className={location.pathname === '/downloads' ? 'active' : ''}>Downloads</a>
-        <a href="/favourites" className={location.pathname === '/favourites' ? 'active' : ''}>Favourites</a>
-
-        {/* 👇 Only show to admin */}
+        <Link to="/home" className={location.pathname === '/home' ? 'active' : ''}>Home</Link>
+        <Link to="/playlist" className={location.pathname === '/playlist' ? 'active' : ''}>Your Playlist</Link>
+        <Link to="/downloads" className={location.pathname === '/downloads' ? 'active' : ''}>Downloads</Link>
+        <Link to="/favourites" className={location.pathname === '/favourites' ? 'active' : ''}>Favourites</Link>
         {user?.email === 'admin@gmail.com' && (
-          <a href="/add-music" className={location.pathname === '/add-music' ? 'active' : ''}>Add Music</a>
-        )}
-
-        {/* 👇 Always show logout if logged in */}
-        {user && (
-          <button
-            onClick={handleLogout}
-            style={{
-              background: 'transparent',
-              color: 'white',
-              border: 'none',
-              cursor: 'pointer',
-              marginLeft: '10px',
-              fontWeight: 'bold'
-            }}
-          >
-            Logout
-          </button>
+          <Link to="/add-music" className={location.pathname === '/add-music' ? 'active' : ''}>Add Music</Link>
         )}
       </nav>
 
@@ -72,10 +54,28 @@ function Header({ onSearch }) {
         <button onClick={() => onSearch(search)}>Search</button>
       </div>
 
-      {/* 👇 Welcome user */}
+      {/* Welcome Message */}
       {user && (
-        <div style={{ color: 'white', marginLeft: '20px', fontWeight: '600' }}>
+        <div style={{ color: 'white', marginLeft: '15px', fontWeight: '600' }}>
           Welcome, {user.name.split(' ')[0]}!
+        </div>
+      )}
+
+      {/* Profile Dropdown */}
+      {user && (
+        <div className="profile-menu">
+          <button className="profile-icon" onClick={() => setShowDropdown(!showDropdown)}>
+            {user.name.charAt(0).toUpperCase()}
+          </button>
+
+          {showDropdown && (
+            <div className="dropdown-panel">
+              <Link to="/account">Account</Link>
+              <Link to="/settings">Settings</Link>
+              <Link to="/premium">Upgrade to Premium</Link>
+              <button onClick={handleLogout}>Log out</button>
+            </div>
+          )}
         </div>
       )}
     </header>
