@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePageWrapper from './pages/HomePageWrapper';
@@ -9,10 +9,11 @@ import FavouritesPage from './pages/FavouritesPage';
 import DownloadsPage from './pages/DownloadsPage';
 import AddMusicPage from './pages/AddMusicPage';
 import PlaylistPage from './pages/PlaylistPage';
-import PremiumPage from './pages/PremiumPage'; // ✅ NEW
+import PremiumPage from './pages/PremiumPage';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-function App() {
+function AppContent() {
+  const location = useLocation();
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
   const [currentSong, setCurrentSong] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -105,8 +106,9 @@ function App() {
   };
 
   return (
-    <Router>
-      {isLoggedIn && <Header />}
+    <>
+      {/* Show Header on all pages except login/register */}
+      {location.pathname !== '/' && location.pathname !== '/register' && <Header />}
 
       <div className="main-content-wrapper">
         <Routes>
@@ -117,10 +119,11 @@ function App() {
           <Route path="/favourites" element={isLoggedIn ? <FavouritesPage onSongChange={handleSongChange} /> : <Navigate to="/" />} />
           <Route path="/playlist" element={isLoggedIn ? <PlaylistPage onSongChange={handleSongChange} /> : <Navigate to="/" />} />
           <Route path="/add-music" element={isLoggedIn ? <AddMusicPage /> : <Navigate to="/" />} />
-          <Route path="/premium" element={isLoggedIn ? <PremiumPage /> : <Navigate to="/" />} /> {/* ✅ New Premium Route */}
+          <Route path="/premium" element={isLoggedIn ? <PremiumPage /> : <Navigate to="/" />} />
         </Routes>
       </div>
 
+      {/* Music Player Bar */}
       {isLoggedIn && currentSong && (
         <div className="spotify-player-bar">
           <audio ref={audioRef} src={currentSong.audio} autoPlay />
@@ -183,9 +186,16 @@ function App() {
         </div>
       )}
 
-      {isLoggedIn && <Footer />}
-    </Router>
+      {/* Footer */}
+      {location.pathname !== '/' && location.pathname !== '/register' && <Footer />}
+    </>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
+  );
+}
